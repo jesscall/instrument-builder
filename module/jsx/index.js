@@ -1,7 +1,7 @@
 // Import libraries
 import React, {Component} from 'react';
 // Import component
-import AddListItemForm from './addListItemForm';
+import AddTextItemForm from './addTextItemForm';
 
 // An example of how to use components
 class Index extends Component {
@@ -10,7 +10,7 @@ class Index extends Component {
 
     this.state = {
       formData: {},
-      uiType: 'select',
+      uiType: 'textbox',
     };
 
     this.save = this.save.bind(this);
@@ -23,7 +23,7 @@ class Index extends Component {
 
   render() {
     return (
-      <AddListItemForm
+      <AddTextItemForm
         uiType={this.state.uiType}
         onSave={this.save}
       />
