@@ -10,55 +10,33 @@ class AddTextItemForm extends Component {
 
     // Define component's states
     this.state = {
-      formData: { // the object in which the form's data on user input is stored
-        itemID: '',
-        uiType: this.props.uiType,
-        question: '',
-        description: '',
-        selectedType: null,
-        requiredValue: false,
-      },
-      dataType: { // options for 'Data type' select element
-        string: 'String',
-      },
       uiType: { // options for UI type given this.props.uiType
-        textbox: 'Text Box',
+        text: 'Text',
         textarea: 'Text Area',
       },
     };
 
     // Bind all methods to `this` (except for render method)
-    this.setFormData = this.setFormData.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.setCheckbox = this.setCheckbox.bind(this);
-  }
-
-  // Sets this.state.formData on user input for checkbox elements
-  setCheckbox(elementName, value) {
-    let formData = Object.assign({}, this.state.formData);
-    formData[elementName] = value;
-    this.setState({formData});
-  }
-
-  // Sets this.state.formData on user input for the other remaining elements
-  setFormData(elementName, value) {
-    let formData = Object.assign({}, this.state.formData);
-    formData[elementName] = value;
-    this.setState({formData});
   }
 
   // On clicking 'Add item', call the call-back method passed in this.props.onSave
   // This call-back method can be anything you want it to be, what's important here is
   // that handleSubmit calls `this.props.onSave`.
-  // Passing `formData` to the prop function sends the formData up to the parent level
   handleSubmit(e) {
-    let formData = Object.assign({}, this.state.formData);
-    this.props.onSave(formData);
+    this.props.onSave();
   }
 
   // Define render method that returns JSX/React elements
   // The render() method is the only required method in a class component
   render() {
+    const addButton = (this.props.mode=='edit') ? null : (
+      <ButtonElement
+        name='submit'
+        type='submit'
+        label='Add item'
+      />
+    );
     // Return what you want the form to look like using components from `jsx/Form.js`
     return (
       <FormElement
@@ -69,8 +47,8 @@ class AddTextItemForm extends Component {
         <TextboxElement
           name='itemID'
           label='Item ID'
-          value={this.state.formData.itemID}
-          onUserInput={this.setFormData}
+          value={this.props.formData.itemID}
+          onUserInput={this.props.onEditField}
           required={true}
         />
         <StaticElement
@@ -80,35 +58,29 @@ class AddTextItemForm extends Component {
         <TextboxElement
           name='question'
           label='Question text'
-          value={this.state.formData.question}
-          onUserInput={this.setFormData}
+          value={this.props.formData.question}
+          onUserInput={this.props.onEditField}
           required={true}
         />
         <TextboxElement
           name='description'
           label='Description'
-          value={this.state.formData.description}
-          onUserInput={this.setFormData}
+          value={this.props.formData.description}
+          onUserInput={this.props.onEditField}
         />
-        <SelectElement
-          name='selectedType'
-          label='Data type'
-          options={this.state.dataType}
-          value={this.state.formData.selectedType}
-          onUserInput={this.setFormData}
-          required={true}
+        <TextboxElement
+          name='branching'
+          label='Branching formula'
+          value={this.props.formData.branching}
+          onUserInput={this.props.onEditField}
         />
         <CheckboxElement
           name='requiredValue'
           label='Required item'
-          value={this.state.formData.requiredValue}
-          onUserInput={this.setCheckbox}
+          value={this.props.formData.requiredValue}
+          onUserInput={this.props.onEditField}
         />
-        <ButtonElement
-          name='submit'
-          type='submit'
-          label='Add item'
-        />
+        {addButton}
       </FormElement>
     );
   }
@@ -116,8 +88,11 @@ class AddTextItemForm extends Component {
 
 // Define props to pass to the component when called
 AddTextItemForm.propTypes = {
-  uiType: PropTypes.string.isRequired, // i.e. whether it is "textbox" or "textarea"
-  onSave: PropTypes.func.isRequired, // a call-back function defined in parent class that will be triggered when called in this class
+  uiType: PropTypes.string.isRequired, // i.e. whether it is "text" or "textarea"
+  formData: PropTypes.object,
+  onSave: PropTypes.func, // a call-back function defined in parent class that will be triggered when called in this class
+  mode: PropTypes.string,
+  onEditField: PropTypes.func,
 };
 
 // Export component to be used in other classes
